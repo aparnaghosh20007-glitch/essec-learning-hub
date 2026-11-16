@@ -9,7 +9,7 @@
     • its own page at /session/<id>
 
   To fill in a placeholder after a guest speaker visits:
-    1. Find the session (e.g. id: 'session-2').
+    1. Find the session (e.g. id: 'session-4').
     2. Change `status` from 'upcoming' to 'completed'.
     3. Replace the placeholder text (title, topic, speaker, date, summary).
     4. Add your `takeaways` (a list of short sentences).
@@ -19,6 +19,9 @@
 
   To add a 7th session: copy one whole { ... } block, paste it at the
   end of the list, and give it a new unique id like 'session-7'.
+
+  Optional extra sections (see session2.js for a full example):
+    subtitle, organisation, objectives, concepts, workflow, topics
 
   Quiz question formats:
     • Multiple choice:
@@ -30,6 +33,8 @@
           items: ['Step 1', 'Step 2', 'Step 3'],   // write them in the CORRECT order
           explanation: '...' }                      // the app shuffles them for you
 */
+
+import { session2 } from './session2.js'
 
 export const sessions = [
   {
@@ -199,30 +204,21 @@ export const sessions = [
     },
   },
 
+  // Session 2 lives in its own file (session2.js) because it has a lot of content.
+  session2,
+
   // ---------- PLACEHOLDERS: fill these in after each session ----------
-  {
-    id: 'session-2',
-    number: 2,
-    status: 'upcoming',
-    title: 'Session 2 — Title to be added',
-    topic: 'Topic to be added after the session',
-    speaker: 'Guest speaker — to be confirmed',
-    date: 'Date to be added',
-    summary: 'Placeholder: add a short summary of this guest speaker session here.',
-    tools: [],
-    activities: ['Interactive game — to be added', 'Key takeaways — to be added', 'Personal reflection'],
-    takeaways: [],
-    quiz: null,
-  },
   {
     id: 'session-3',
     number: 3,
     status: 'upcoming',
-    title: 'Session 3 — Title to be added',
-    topic: 'Topic to be added after the session',
-    speaker: 'Guest speaker — to be confirmed',
+    title: 'LinkedIn Guest Speaker Session',
+    topic: 'Topic to be added once verified',
+    speaker: 'LinkedIn guest speaker — name to be confirmed',
+    organisation: 'LinkedIn',
     date: 'Date to be added',
-    summary: 'Placeholder: add a short summary of this guest speaker session here.',
+    summary:
+      'Placeholder: a guest speaker from LinkedIn visited our class. The speaker\'s name, topic, key learnings and quiz will be added here once verified information (slides or official materials) is available.',
     tools: [],
     activities: ['Interactive game — to be added', 'Key takeaways — to be added', 'Personal reflection'],
     takeaways: [],

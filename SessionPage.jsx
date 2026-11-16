@@ -1,6 +1,8 @@
 /*
   SESSION PAGE
   One page per session: overview, game, takeaways and reflection.
+  Optional extra sections (objectives, key concepts, workflow, lecture notes)
+  appear only for sessions that include them in their data.
   Upcoming sessions show clearly labelled placeholders.
 */
 import { Link, useParams } from 'react-router-dom'
@@ -8,6 +10,7 @@ import { getSession, sessions } from '../data/sessions.js'
 import Quiz from '../components/Quiz.jsx'
 import ReflectionBox from '../components/ReflectionBox.jsx'
 import NotFound from './NotFound.jsx'
+import { LearningObjectives, ConceptCards, WorkflowStepper, TopicSections } from './SessionExtras.jsx'
 import { useProgress } from '../state/ProgressContext.jsx'
 
 export default function SessionPage() {
@@ -23,6 +26,22 @@ export default function SessionPage() {
   const prev = sessions[position - 1]
   const next = sessions[position + 1]
 
+  // "On this page" links, only for sessions with extra sections.
+  const jumpLinks = [
+    session.objectives && ['objectives', 'Objectives'],
+    session.workflow && ['workflow', 'Workflow'],
+    session.concepts && ['concepts', 'Key concepts'],
+    session.topics && ['lecture-notes', 'Lecture notes'],
+    ['game-title', 'Quiz'],
+    ['takeaways', 'Takeaways'],
+    ['reflect-title', 'Reflection'],
+  ].filter(Boolean)
+  const hasExtras = jumpLinks.length > 3
+
+  function jumpTo(id) {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
   return (
     <>
       <section className={`session-hero ${upcoming ? 'is-upcoming' : ''}`}>
@@ -36,9 +55,13 @@ export default function SessionPage() {
                 {done && <span className="badge badge-done">✓ Completed</span>}
               </div>
               <h1>{session.title}</h1>
+              {session.subtitle && <p className="session-hero-subtitle">{session.subtitle}</p>}
               <p className="session-hero-topic">{session.topic}</p>
               <dl className="session-meta">
                 <div><dt>Speaker</dt><dd>{session.speaker}</dd></div>
+                {session.organisation && (
+                  <div><dt>Organisation</dt><dd>{session.organisation}</dd></div>
+                )}
                 <div><dt>Date</dt><dd>{session.date}</dd></div>
                 {session.tools.length > 0 && (
                   <div><dt>Tools</dt><dd>{session.tools.join(' · ')}</dd></div>
@@ -57,7 +80,49 @@ export default function SessionPage() {
           <ul className="pill-list">
             {session.activities.map((a) => <li key={a}>{a}</li>)}
           </ul>
+          {hasExtras && (
+            <>
+              <p className="mini-label">On this page</p>
+              <div className="jump-links">
+                {jumpLinks.map(([id, label]) => (
+                  <button key={id} type="button" className="jump-link" onClick={() => jumpTo(id)}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </section>
+
+        {session.objectives && (
+          <section className="panel" aria-labelledby="objectives">
+            <h2 id="objectives">Learning objectives</h2>
+            <p className="muted">By the end of this session you should be able to:</p>
+            <LearningObjectives items={session.objectives} />
+          </section>
+        )}
+
+        {session.workflow && (
+          <section className="panel" aria-labelledby="workflow">
+            <h2 id="workflow">Step by step: {session.workflow.title}</h2>
+            <WorkflowStepper workflow={session.workflow} />
+          </section>
+        )}
+
+        {session.concepts && (
+          <section className="panel" aria-labelledby="concepts">
+            <h2 id="concepts">Key concepts</h2>
+            <ConceptCards concepts={session.concepts} />
+          </section>
+        )}
+
+        {session.topics && (
+          <section className="panel" aria-labelledby="lecture-notes">
+            <h2 id="lecture-notes">Lecture notes</h2>
+            <p className="muted">Tap a topic to open or close it.</p>
+            <TopicSections topics={session.topics} />
+          </section>
+        )}
 
         <section className="panel panel-game" aria-labelledby="game-title">
           <h2 id="game-title">Test yourself</h2>
@@ -68,7 +133,7 @@ export default function SessionPage() {
               <p className="placeholder-icon" aria-hidden="true">🎲</p>
               <p><strong>Interactive game — to be added after this session.</strong></p>
               <p className="muted">
-                Add a quiz for this session in <code>src/data/sessions.js</code> (copy the format used in Session 1).
+                Add a quiz for this session in <code>sessions.js</code> (copy the format used in Session 1).
               </p>
             </div>
           ) : (
@@ -94,7 +159,7 @@ export default function SessionPage() {
           ) : (
             <div className="placeholder-box">
               <p><strong>Key takeaways — to be added after this session.</strong></p>
-              <p className="muted">Add them to the <code>takeaways</code> list for this session in <code>src/data/sessions.js</code>.</p>
+              <p className="muted">Add them to the <code>takeaways</code> list for this session in <code>sessions.js</code>.</p>
             </div>
           )}
         </section>

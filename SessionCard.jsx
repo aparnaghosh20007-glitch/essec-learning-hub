@@ -1,22 +1,33 @@
 /*
-  SESSION CARD
-  The card shown on the homepage for each session.
+  SESSION CARD ("mission file")
+  The card shown on the homepage for each session:
+  title, topic, learning activities and mission progress.
 */
 import { Link } from 'react-router-dom'
-import { useProgress } from '../state/ProgressContext.jsx'
+import { useProgress } from './ProgressContext.jsx'
+import { missionMeta, missionProgress, missionStates } from './game.js'
+import { FillBar, Icon } from './GameUI.jsx'
 
 export default function SessionCard({ session }) {
-  const { isComplete } = useProgress()
-  const done = isComplete(session.id)
-  const upcoming = session.status === 'upcoming'
+  const { progress } = useProgress()
+  const meta = missionMeta(session)
+  const state = missionStates(progress.awards)[session.id]
+  const p = missionProgress(session, progress.awards)
+  const upcoming = state === 'soon'
 
-  let badge = { label: 'Ready to play', className: 'badge-ready' }
-  if (done) badge = { label: 'Completed', className: 'badge-done' }
-  else if (upcoming) badge = { label: 'Placeholder', className: 'badge-upcoming' }
+  const badge = {
+    done: { label: 'Completed', className: 'badge-done' },
+    current: { label: 'Current mission', className: 'badge-ready' },
+    open: { label: 'Ready to play', className: 'badge-ready' },
+    soon: { label: 'Placeholder', className: 'badge-upcoming' },
+  }[state]
 
   return (
-    <article className={`session-card ${upcoming ? 'is-upcoming' : ''}`}>
+    <article className={`session-card is-${state}`} style={{ '--accent': meta.accent }}>
       <div className="session-card-top">
+        <span className="session-card-icon">
+          <Icon name={state === 'done' ? 'check' : meta.icon} size={22} />
+        </span>
         <span className="session-number">{String(session.number).padStart(2, '0')}</span>
         <span className={`badge ${badge.className}`}>{badge.label}</span>
       </div>
@@ -33,8 +44,17 @@ export default function SessionCard({ session }) {
         </ul>
       </div>
 
-      <Link to={`/session/${session.id}`} className={`button ${upcoming ? 'button-ghost' : 'button-primary'}`}>
-        {upcoming ? 'View placeholder' : done ? 'Review session' : 'Start session'}
+      {!upcoming && (
+        <div className="session-card-progress">
+          <FillBar pct={Math.round((p.count / p.total) * 100)} label={`Mission ${session.number} sections cleared`} />
+          <span>
+            {p.count}/{p.total} sections · {p.earned} XP
+          </span>
+        </div>
+      )}
+
+      <Link to={`/mission/${session.id}`} className={`button ${upcoming ? 'button-ghost' : 'button-primary'}`}>
+        {upcoming ? 'View district' : state === 'done' ? 'Replay mission' : 'Enter mission'}
         <span aria-hidden="true"> →</span>
       </Link>
     </article>

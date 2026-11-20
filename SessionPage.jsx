@@ -4,12 +4,15 @@
   Optional extra sections (objectives, key concepts, workflow, lecture notes)
   appear only for sessions that include them in their data.
   Upcoming sessions show clearly labelled placeholders.
+  In the game this page is the mission's "Intel Archive": the original
+  content, unchanged, including the classic quiz in its original format.
 */
 import { Link, useParams } from 'react-router-dom'
 import { getSession, sessions } from '../data/sessions.js'
 import Quiz from '../components/Quiz.jsx'
 import ReflectionBox from '../components/ReflectionBox.jsx'
 import NotFound from './NotFound.jsx'
+import { getMission } from './missions.js'
 import { LearningObjectives, ConceptCards, WorkflowStepper, TopicSections } from './SessionExtras.jsx'
 import { useProgress } from '../state/ProgressContext.jsx'
 
@@ -46,7 +49,10 @@ export default function SessionPage() {
     <>
       <section className={`session-hero ${upcoming ? 'is-upcoming' : ''}`}>
         <div className="container">
-          <Link to="/#sessions" className="back-link">← All sessions</Link>
+          <div className="archive-bar">
+            <Link to={`/mission/${session.id}`} className="back-link">← {getMission(session.id) ? 'Back to the mission tower' : 'Back to the district'}</Link>
+            <span className="archive-tag">Intel Archive · original session content</span>
+          </div>
           <div className="session-hero-row">
             <span className="session-hero-number">{String(session.number).padStart(2, '0')}</span>
             <div>

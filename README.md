@@ -34,6 +34,33 @@ essec-learning-hub/
 └── package.json                project name, scripts and libraries
 ```
 
+## The game: Neon Metropolis Tactics
+
+Session Lab is now a game. Each guest-speaker session is a district of the fictional city of Neo Metro, and each district is a tower with five floors:
+
+| Floor | Section | XP | Engine (file) |
+|---|---|---|---|
+| 1 | Learn: cinematic briefing, a branching first call, the workflow walkthrough | 50 | `Briefing.jsx` |
+| 2 | Explore: drag-and-drop ordering and matching rounds | 50 | `SlotPuzzle.jsx` |
+| 3 | Play: strategy cards with trap cards and a trust meter | 100 | `CardTactics.jsx` |
+| 4 | Challenge: decision room with consequences (+ a persuasion duel in Mission 02) | 100 | `Scenario.jsx` |
+| Roof | Boss battle: the ORIGINAL quiz, word for word (50%+ claims the rooftop) | up to 200 | `BossBattle.jsx` |
+
+A 30-word reflection adds 50 XP. XP is paid once per activity: replays are practice, and a better boss score pays only the difference.
+
+**Where things live**
+
+- `sessions.js`, `session2.js`: all original session content and quizzes (unchanged).
+- `mission1.js`, `mission2.js`: the game content for each mission, built only from verified session material, with a source on every item. `missions.js` lists them.
+- `game.js`: XP, ranks (Marketing Explorer → Chief Marketing Officer), badges and avatar items.
+- `creator.js`: the public creator profile and credit.
+- `ProgressContext.jsx`: everything saved in the browser (profile, avatar, XP, scores, reflections).
+- Screens: `Home.jsx` (title), `Profile.jsx`, `City.jsx`, `HQ.jsx`, `MissionHub.jsx`, `MissionSection.jsx`, `MissionComplete.jsx`.
+- Look: `Scene.jsx` (animated city backdrop), `Avatar.jsx` (illustrated avatar), `game.css`.
+- The original session page is kept as each mission's **Intel Archive** (`SessionPage.jsx`), including the classic quiz in its original format and the reflection box. The journal download is in `ReflectionsPage.jsx`.
+
+**Adding a mission later:** fill in the session in `sessions.js` first, then copy `mission2.js` as a guide, use only verified material, and add it to `missions.js`. Sessions without a mission file stay "offline" districts.
+
 ## Adding a new session's content
 
 Open `src/data/sessions.js`. The instructions are at the top of the file. In short:
